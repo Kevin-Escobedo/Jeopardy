@@ -3,7 +3,7 @@
 
 class Jeopardy_Board:
     '''Class that represents a board'''
-    def __init__(self, rows = 1, columns = 1):
+    def __init__(self, rows = 5, columns = 6):
         '''Initializes a 2D board'''
         self.rows = rows
         self.columns = columns
