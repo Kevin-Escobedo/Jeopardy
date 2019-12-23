@@ -22,12 +22,20 @@ class JeopardyBoard:
     def get_score(self, double: bool = False) -> int:
         '''Calculates the current score'''
         total = 0
+
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.board[i][j] == True:
-                    total += self.values[i]
+                    if double:
+                        total += 2 * self.values[i]
+                    else:
+                        total += self.values[i]
+
                 if self.board[i][j] == False:
-                    total -= self.values[i]
+                    if double:
+                        total -= 2 * self.values[i]
+                    else:
+                        total -= self.values[i]
         return total
 
     def show_board(self) -> None:
