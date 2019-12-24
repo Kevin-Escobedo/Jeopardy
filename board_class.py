@@ -1,5 +1,7 @@
 #Author: Kevin C. Escobedo
 #Email: escobedo001@gmail.com
+from rolling_files import get_file_name
+from datetime import datetime
 
 class JeopardyBoard:
     '''Class that represents a board'''
@@ -7,7 +9,7 @@ class JeopardyBoard:
         '''Initializes a 2D board'''
         self.rows = rows
         self.columns = columns
-        self.board = self.make_board()
+        self.board = [[None] * self.columns for i in range(self.rows)]
         self.values = {0: 200, 1: 400, 2: 600, 3: 800, 4: 1000}
 
     def make_board(self) -> [[bool]]:
@@ -45,17 +47,33 @@ class JeopardyBoard:
                 print(self.board[i][j], end = ' ')
             print()
 
-    def update_question(self, row:int, column:int):
-        if self.board[row][column] == None:
-            self.board[row][column] == True
-            
-        elif self.board[row][column] == True:
-            self.board[row][column] == False
+    def export_board(self, double:bool = False) -> None:
+        '''Exports the board into a file'''
+        now = datetime.now()
+        file_name = "jeopardy_board-{}-{}-{}.txt".format(now.month, now.day, now.year)
+        if double:
+            file_name = "double_{}".format(file_name)
+        file = open(get_file_name(file_name), "w")
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.board[i][j] == None:
+                    file.write(" 0 ")
+                elif self.board[i][j] == True:
+                    file.write(" + ")
+                else:
+                    file.write(" - ")
+            file.write("\n")
+        if double:
+            file.write("Total Score: {}".format(self.get_score(True)))
+        else:
+            file.write("Total Score: {}".format(self.get_score()))
+        file.flush()
+        file.close()
 
-        elif self.board[row][column] == False:
-            self.board[row][column] = None
 
 if __name__ == "__main__":
     j = JeopardyBoard()
-    #j.show_board()
+    j.show_board()
     print(j.get_score())
+    j.update_question(0, 0)
+    j.show_board()
