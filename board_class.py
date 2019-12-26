@@ -70,10 +70,28 @@ class JeopardyBoard:
         file.flush()
         file.close()
 
+    def import_board(self, file_name:str):
+        '''Reads a board from an exported board file'''
+        file = open(file_name, "r")
+        info = file.readlines()
+        file.close()
+        info = info[:-1]
+        for i, data in enumerate(info):
+            data = data.strip().split()
+            for j, score in enumerate(data):
+                if score == "0":
+                    self.board[i][j] = None
+                elif score == "+":
+                    self.board[i][j] = True
+                else:
+                    self.board[i][j] = False
 
 if __name__ == "__main__":
     j = JeopardyBoard()
     j.show_board()
     print(j.get_score())
-    j.update_question(0, 0)
+    #j.board[0][0] = True
+    #j.show_board()
+    #j.export_board()
+    j.import_board("jeopardy_board-12-26-2019-11.txt")
     j.show_board()
