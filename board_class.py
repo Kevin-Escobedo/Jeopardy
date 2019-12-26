@@ -1,5 +1,7 @@
 #Author: Kevin C. Escobedo
 #Email: escobedo001@gmail.com
+from rolling_files import get_file_name
+from datetime import datetime
 
 class JeopardyBoard:
     '''Class that represents a board'''
@@ -7,7 +9,7 @@ class JeopardyBoard:
         '''Initializes a 2D board'''
         self.rows = rows
         self.columns = columns
-        self.board = self.make_board()
+        self.board = [[None] * self.columns for i in range(self.rows)]
         self.values = {0: 200, 1: 400, 2: 600, 3: 800, 4: 1000}
 
     def make_board(self) -> [[bool]]:
@@ -45,17 +47,51 @@ class JeopardyBoard:
                 print(self.board[i][j], end = ' ')
             print()
 
-    def update_question(self, row:int, column:int):
-        if self.board[row][column] == None:
-            self.board[row][column] == True
-            
-        elif self.board[row][column] == True:
-            self.board[row][column] == False
+    def export_board(self, double:bool = False) -> None:
+        '''Exports the board into a file'''
+        now = datetime.now()
+        file_name = "jeopardy_board-{}-{}-{}.txt".format(now.month, now.day, now.year)
+        if double:
+            file_name = "double_{}".format(file_name)
+        file = open(get_file_name(file_name), "w")
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.board[i][j] == None:
+                    file.write(" 0 ")
+                elif self.board[i][j] == True:
+                    file.write(" + ")
+                else:
+                    file.write(" - ")
+            file.write("\n")
+        if double:
+            file.write("Total Score: {}".format(self.get_score(True)))
+        else:
+            file.write("Total Score: {}".format(self.get_score()))
+        file.flush()
+        file.close()
 
-        elif self.board[row][column] == False:
-            self.board[row][column] = None
+    def import_board(self, file_name:str):
+        '''Reads a board from an exported board file'''
+        file = open(file_name, "r")
+        info = file.readlines()
+        file.close()
+        info = info[:-1]
+        for i, data in enumerate(info):
+            data = data.strip().split()
+            for j, score in enumerate(data):
+                if score == "0":
+                    self.board[i][j] = None
+                elif score == "+":
+                    self.board[i][j] = True
+                else:
+                    self.board[i][j] = False
 
 if __name__ == "__main__":
     j = JeopardyBoard()
-    #j.show_board()
+    j.show_board()
     print(j.get_score())
+    #j.board[0][0] = True
+    #j.show_board()
+    #j.export_board()
+    j.import_board("jeopardy_board-12-26-2019-11.txt")
+    j.show_board()
