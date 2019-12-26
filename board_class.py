@@ -1,6 +1,6 @@
 #Author: Kevin C. Escobedo
 #Email: escobedo001@gmail.com
-from rolling_files import get_file_name
+from name_files import get_file_name
 from datetime import datetime
 
 class JeopardyBoard:
@@ -50,7 +50,7 @@ class JeopardyBoard:
     def export_board(self, double:bool = False) -> None:
         '''Exports the board into a file'''
         now = datetime.now()
-        file_name = "jeopardy_board-{}-{}-{}.txt".format(now.month, now.day, now.year)
+        file_name = "jeopardy_board-{}-{}-{}.bor".format(now.month, now.day, now.year)
         if double:
             file_name = "double_{}".format(file_name)
         file = open(get_file_name(file_name), "w")
@@ -72,26 +72,22 @@ class JeopardyBoard:
 
     def import_board(self, file_name:str):
         '''Reads a board from an exported board file'''
-        file = open(file_name, "r")
-        info = file.readlines()
-        file.close()
-        info = info[:-1]
-        for i, data in enumerate(info):
-            data = data.strip().split()
-            for j, score in enumerate(data):
-                if score == "0":
-                    self.board[i][j] = None
-                elif score == "+":
-                    self.board[i][j] = True
-                else:
-                    self.board[i][j] = False
+        try:
+            file = open(file_name, "r")
+            info = file.readlines()
+            file.close()
+            info = info[:-1]
+            for i, data in enumerate(info):
+                data = data.strip().split()
+                for j, score in enumerate(data):
+                    if score == "0":
+                        self.board[i][j] = None
+                    elif score == "+":
+                        self.board[i][j] = True
+                    else:
+                        self.board[i][j] = False
+        except FileNotFoundError:
+            pass
 
 if __name__ == "__main__":
     j = JeopardyBoard()
-    j.show_board()
-    print(j.get_score())
-    #j.board[0][0] = True
-    #j.show_board()
-    #j.export_board()
-    j.import_board("jeopardy_board-12-26-2019-11.txt")
-    j.show_board()
