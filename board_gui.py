@@ -45,7 +45,7 @@ class BoardGUI:
         self.blank = "#F0F0ED"
         self.wrong = "#F03320"
 
-        self.double_button = tkinter.Button(self.root_window, text = "Double", command = self.invert_double, bg = self.wrong)
+        self.double_button = tkinter.Button(self.root_window, text = "Double", command = self.invert_double, bg = self.blank)
         self.double_button.config(height = self.button_height, width = self.button_width)
         self.double_button.grid(row = 0, column = 1)
 
@@ -112,8 +112,21 @@ elif self.game.board[{row}][{col}] == True:
         self.game.double = not self.game.double
         if self.game.double:
             self.double_button.config(bg = self.correct)
+            for i in range(self.game.rows):
+                    for j in range(self.game.columns):
+                        code = """
+self.button_{row}{col}.config(text = self.game.d_values[{row}])""".format(row = i, col = j)
+
+                        exec(code)
         else:
-            self.double_button.config(bg = self.wrong)
+            self.double_button.config(bg = self.blank)
+            for i in range(self.game.rows):
+                    for j in range(self.game.columns):
+                        code = """
+self.button_{row}{col}.config(text = self.game.values[{row}])""".format(row = i, col = j)
+
+                        exec(code)
+        self.score.set(self.game.get_score())
         
         
             
