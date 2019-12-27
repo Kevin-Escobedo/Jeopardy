@@ -5,12 +5,14 @@ from datetime import datetime
 
 class JeopardyBoard:
     '''Class that represents a board'''
-    def __init__(self, rows = 5, columns = 6):
+    def __init__(self, rows = 5, columns = 6, double = False):
         '''Initializes a 2D board'''
         self.rows = rows
         self.columns = columns
         self.board = [[None] * self.columns for i in range(self.rows)]
         self.values = {0: 200, 1: 400, 2: 600, 3: 800, 4: 1000}
+        self.double = double
+        self.d_values = {0: 400, 1: 800, 2: 1200, 3: 1600, 4: 2000}
 
     def make_board(self) -> [[bool]]:
         '''Makes a 2D list with each value initialized to 0'''
@@ -21,21 +23,21 @@ class JeopardyBoard:
                 board[-1].append(None)
         return board
 
-    def get_score(self, double: bool = False) -> int:
+    def get_score(self) -> int:
         '''Calculates the current score'''
         total = 0
 
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.board[i][j] == True:
-                    if double:
-                        total += 2 * self.values[i]
+                    if self.double:
+                        total += self.d_values[i]
                     else:
                         total += self.values[i]
 
                 if self.board[i][j] == False:
-                    if double:
-                        total -= 2 * self.values[i]
+                    if self.double:
+                        total -= self.d_values[i]
                     else:
                         total -= self.values[i]
         return total
@@ -47,11 +49,11 @@ class JeopardyBoard:
                 print(self.board[i][j], end = ' ')
             print()
 
-    def export_board(self, double:bool = False) -> None:
+    def export_board(self) -> None:
         '''Exports the board into a file'''
         now = datetime.now()
-        file_name = "jeopardy_board-{}-{}-{}.bor".format(now.month, now.day, now.year)
-        if double:
+        file_name = "jeopardy_board-{}-{}-{}.txt".format(now.month, now.day, now.year)
+        if self.double:
             file_name = "double_{}".format(file_name)
         file = open(get_file_name(file_name), "w")
         for i in range(self.rows):
@@ -63,10 +65,7 @@ class JeopardyBoard:
                 else:
                     file.write(" - ")
             file.write("\n")
-        if double:
-            file.write("Total Score: {}".format(self.get_score(True)))
-        else:
-            file.write("Total Score: {}".format(self.get_score()))
+        file.write("Total Score: {}".format(self.get_score()))
         file.flush()
         file.close()
 
