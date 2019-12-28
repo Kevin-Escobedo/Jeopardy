@@ -118,7 +118,7 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
 
     def get_wager(self):
         '''Gets the wager inputted in Final Jeopardy!'''
-        current_score = self.game.score()
+        current_score = self.game.get_score()
         try:
             wager = int(self.enter_wager.get())
             if wager < 0 or wager > current_score or wager in [69, 666, 14, 88, 1488]:
@@ -126,6 +126,17 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
             return wager
         except ValueError:
             messagebox.showinfo("Error", message = "Wager must be between $0 and ${} and cannot be $69, $666, $14, $88, or $1488".format(current_score))
+
+    def get_daily_wager(self):
+        '''Gets the wager inputted in Final Jeopardy!'''
+        current_score = self.game.get_score()
+        try:
+            wager = int(self.enter_wager.get())
+            if wager < 5 or wager > current_score or wager in [69, 666, 14, 88, 1488]:
+                raise ValueError
+            return wager
+        except ValueError:
+            messagebox.showinfo("Error", message = "Wager must be between $5 and ${} and cannot be $69, $666, $14, $88, or $1488".format(current_score))
             
 
     def final_correct(self, window):
@@ -133,6 +144,7 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
         
         if wager != None:
             self.score.set(self.game.final_jeopardy(wager, 1))
+            self.game.export_final(self.enter_cat.get().strip(), wager, self.response_wager.get().strip(), 1)
             window.destroy()
 
     def final_wrong(self, window):
@@ -140,17 +152,18 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
 
         if wager != None:
             self.score.set(self.game.final_jeopardy(wager, 0))
+            self.game.export_final(self.enter_cat.get().strip(), wager, self.response_wager.get().strip(), 0)
             window.destroy()
 
     def daily_correct(self, window):
-        wager = self.get_wager()
+        wager = self.get_daily_wager()
         
         if wager != None:
             self.score.set(self.game.final_jeopardy(wager, 1))
             window.destroy()
 
     def daily_wrong(self, window):
-        wager = self.get_wager()
+        wager = self.get_daily_wager()
 
         if wager != None:
             self.score.set(self.game.final_jeopardy(wager, 0))
@@ -187,7 +200,7 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
 
     def daily_double(self):
         window = tkinter.Toplevel(self.root_window)
-        window.geometry("400x225")
+        window.geometry("400x150")
         window.resizable(0,0)
         window.iconbitmap(self.resource_path("jeopardy.ico"))
         window.title("Daily Double")
@@ -198,16 +211,16 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
         self.enter_wager = tkinter.Entry(window, width = self.button_width * 3)
         self.enter_wager.grid(row = 0, column = 1)
 
-        self.response_label = tkinter.Label(window, text = "Answer", height = self.button_height, width = self.button_width)
-        self.response_label.grid(row = 1, column = 0)
-        self.response_wager = tkinter.Entry(window, width = self.button_width * 3)
-        self.response_wager.grid(row = 1, column = 1)
+        #self.response_label = tkinter.Label(window, text = "Answer", height = self.button_height, width = self.button_width)
+        #self.response_label.grid(row = 1, column = 0)
+        #self.response_wager = tkinter.Entry(window, width = self.button_width * 3)
+        #self.response_wager.grid(row = 1, column = 1)
 
         self.correct_button = tkinter.Button(window, text = "Correct", height = self.button_height, width = self.button_width, bg = self.correct, command = lambda: self.daily_correct(window))
-        self.correct_button.grid(row = 2, column = 0, columnspan = 2, sticky = tkinter.W, padx = 50)
+        self.correct_button.grid(row = 1, column = 0, columnspan = 2, sticky = tkinter.W, padx = 50)
 
         self.correct_button = tkinter.Button(window, text = "Wrong", height = self.button_height, width = self.button_width, bg = self.wrong, command = lambda: self.daily_wrong(window))
-        self.correct_button.grid(row = 2, column = 1, columnspan = 2, sticky = tkinter.E)
+        self.correct_button.grid(row = 1, column = 1, columnspan = 2, sticky = tkinter.E)
         
 
             
