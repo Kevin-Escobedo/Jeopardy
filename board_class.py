@@ -9,6 +9,7 @@ class JeopardyBoard:
         '''Initializes a 2D board'''
         self.rows = rows
         self.columns = columns
+        self.score = 0
         self.board = [[None] * self.columns for i in range(self.rows)]
         self.values = {0: 200, 1: 400, 2: 600, 3: 800, 4: 1000}
         self.double = double
@@ -25,7 +26,7 @@ class JeopardyBoard:
 
     def get_score(self) -> int:
         '''Calculates the current score'''
-        total = 0
+        total = self.score
 
         for i in range(self.rows):
             for j in range(self.columns):
@@ -87,6 +88,18 @@ class JeopardyBoard:
                         self.board[i][j] = False
         except FileNotFoundError:
             pass
+
+    def final_jeopardy(self, wager:int = 0, correct:bool = 0):
+        '''Handles Final Jeopardy scoring'''
+        if correct:
+            score = self.get_score() + wager
+        else:
+            score = self.get_score() - wager
+        return score
+
+    def reset_board(self):
+        self.score += int(self.get_score()/2)
+        self.board = self.make_board()
 
 if __name__ == "__main__":
     j = JeopardyBoard()
