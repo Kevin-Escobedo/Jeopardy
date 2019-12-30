@@ -6,6 +6,9 @@ import os
 from tkinter import filedialog
 from tkinter import messagebox
 from board_class import JeopardyBoard
+
+##TODO
+#Fix importing feature
     
 class BoardGUI:
     def __init__(self, height = 336, width = 648):
@@ -223,12 +226,18 @@ self.button_{row}{col}.config(text = self.game.d_values[{row}], bg = self.blank)
         self.correct_button.grid(row = 1, column = 1, columnspan = 2, sticky = tkinter.E)
         
 
+    def on_close(self):
+        '''Runs when GUI is closed'''
+        self.game.export_board() #Saves on close silently
+        self.root_window.destroy()
             
     def run(self):
         self.show_score.grid(row = 0, column = 0, columnspan = 6)
         self.export = tkinter.Button(self.root_window, text = "Export", command = self.game.export_board)
         self.export.config(height = self.button_height, width = self.button_width)
         self.export.grid(row = 0, column = 0, sticky = tkinter.N)
+
+        self.root_window.protocol("WM_DELETE_WINDOW", self.on_close)
 
         #self.import_board = tkinter.Button(self.root_window, text = "Import", command = self.get_board)
         #self.import_board.config(height = int(self.button_height/2), width = self.button_width)
