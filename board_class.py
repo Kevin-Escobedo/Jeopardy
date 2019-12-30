@@ -70,6 +70,22 @@ class JeopardyBoard:
         file.flush()
         file.close()
 
+    def export_final(self, category:str, wager:int, answer:str, correct:bool) -> None:
+        '''Exports the final into a file'''
+        now = datetime.now()
+        file_name = "final_jeopardy-{}-{}-{}.txt".format(now.month, now.day, now.year)
+        file = open(get_file_name(file_name), "w")
+        file.write("Category: {}\n".format(category))
+        file.write("Answer: {}\n".format(answer))
+        if correct:
+            file.write("+ ${}\n".format(wager))
+            file.write("Total Score: {}".format(self.final_jeopardy(wager, 1)))
+        else:
+            file.write("- ${}\n".format(wager))
+            file.write("Total Score: {}".format(self.final_jeopardy(wager, 0)))
+        file.flush()
+        file.close()
+
     def import_board(self, file_name:str):
         '''Reads a board from an exported board file'''
         try:
