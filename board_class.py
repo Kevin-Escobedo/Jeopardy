@@ -1,6 +1,6 @@
 #Author: Kevin C. Escobedo
 #Email: escobedo001@gmail.com
-
+import datetime
 class Jeopardy_Board:
     '''Class that represents a board'''
     def __init__(self, rows = 5, columns = 6):
